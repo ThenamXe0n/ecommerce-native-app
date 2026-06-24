@@ -1,7 +1,7 @@
 import { hydrateAuth } from "@/api/auth.service";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { useEffect } from "react";
 import { ActivityIndicator } from "react-native";
 import { View } from "react-native";
 
@@ -10,6 +10,14 @@ export default function RootLayout() {
 
   const router = useRouter();
   const segments = useSegments();
+
+
+  useEffect(() => {
+    const initialize = async () => {
+      await hydrateAuth()
+    }
+    initialize()
+  }, [])
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -22,15 +30,20 @@ export default function RootLayout() {
     }
 
     if (user && inAuthGroup) {
-      router.replace("/(tabs)/index");
+      router.replace("/(tabs)");
+
     }
   }, [user, isHydrated, segments]);
 
   if (!isHydrated) {
     return <View style={{ "flex": 1, "justifyContent": "center", "alignItems": "center" }}>
-      {/* <ActivityIndicator color={"black"} /> */}
-      <SplashScreen />
+      <ActivityIndicator color={"black"} />
     </View>;
   }
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <Stack screenOptions={{ headerShown: false }} >
+    <Stack.Screen name="(auth)/Login" />
+    <Stack.Screen name="(auth)/Register" />
+    <Stack.Screen name="(tabs)" />
+
+  </Stack>;
 }

@@ -37,7 +37,6 @@ export default function LoginScreen() {
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        console.log(data);
         const response = await login(data);
 
         await authStorage.saveTokens(
@@ -50,6 +49,9 @@ export default function LoginScreen() {
             accessToken: response.data.accessToken,
             refreshToken: response.data.refreshToken,
         });
+
+
+
 
         // API Call
         // await authService.login(data);
